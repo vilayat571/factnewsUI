@@ -1,4 +1,4 @@
-import Layout from "../Layout";
+import Layout from "../layout/Layout";
 
 // Reklam Səhifəsi Komponenti
 export function AdsPage() {

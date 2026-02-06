@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
-import Layout from "../Layout";
+import Layout from "../layout/Layout";
 
 export function ContactPage() {
   const [formData, setFormData] = useState({
