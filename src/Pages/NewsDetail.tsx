@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { News } from "../types";
-import Layout from "../Layout";
+import Layout from "../layout/Layout";
 import { Type } from "lucide-react";
 import NewsCard from "../components/NewsCard";
 import { API_ENDPOINT } from "../constants/urls";

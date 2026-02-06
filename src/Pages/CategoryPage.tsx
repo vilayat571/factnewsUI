@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import Layout from "../Layout";
+import Layout from "../layout/Layout";
 import NewsCard from "../components/NewsCard";
 import { CATEGORIES, type News } from "../types";
 import { API_ENDPOINT } from "../constants/urls";
