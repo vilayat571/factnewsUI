@@ -5,7 +5,7 @@ import Layout from "../layout/Layout";
 import { Type } from "lucide-react";
 import NewsCard from "../components/NewsCard";
 import { API_ENDPOINT } from "../constants/urls";
-import { fetchNewsById } from "../utils/api";
+import { fetchNewsById } from "../api/api";
 import { useMetaTags } from "../hooks/useMetaTags";
 import 'react-quill-new/dist/quill.snow.css';
 import 'quill/dist/quill.snow.css';
@@ -46,16 +46,17 @@ const NewsDetail = () => {
     return `${category}, ${titleWords}, Fact News, Azərbaycan xəbərləri, son xəbərlər`;
   };
 
-  // Dynamic meta tags - only set when news data is loaded
+  // Dynamic meta tags with dynamic OG image generation
   useMetaTags({
     title: news?.title || 'Xəbər Yüklənir',
     description: news?.description || (news?.body ? generateDescription(news.body) : 'Fact News - Azərbaycan və dünya xəbərləri'),
-    image: news?.image || 'https://www.fact-news.info/og-image.jpg',
+    image: news?.image, // If news has an image, use it; otherwise dynamic image will be generated
     url: `https://www.fact-news.info/news/${id}`,
     author: news?.author,
     publishedTime: news?.date,
     category: news?.category,
     keywords: news ? generateKeywords(news.title, news.category) : undefined,
+    generateDynamicImage: !news?.image, // Only generate dynamic image if news doesn't have one
   });
 
   useEffect(() => {
