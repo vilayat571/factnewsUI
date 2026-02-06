@@ -17,6 +17,8 @@ import {
   Zap,
   Film,
   Cpu,
+  BookmarkCheck,
+  Eye,
   type LucideIcon,
 } from "lucide-react";
 import { API_ENDPOINT } from "../constants/urls";
@@ -42,6 +44,8 @@ const Navbar = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
+  const [readCount, setReadCount] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -50,6 +54,31 @@ const Navbar = () => {
   const getCategoryIcon = (categoryValue: string): LucideIcon => {
     return CATEGORY_ICONS[categoryValue] || CATEGORY_ICONS.default;
   };
+
+  // Update saved and read counts
+  useEffect(() => {
+    const updateCounts = () => {
+      const saved = JSON.parse(localStorage.getItem("savedNews") || "[]");
+      setSavedCount(saved.length);
+      
+      const read = JSON.parse(localStorage.getItem("readNews") || "[]");
+      setReadCount(read.length);
+    };
+
+    updateCounts();
+    
+    // Listen for storage changes
+    window.addEventListener("storage", updateCounts);
+    // Custom events for same-tab updates
+    window.addEventListener("savedNewsUpdated", updateCounts);
+    window.addEventListener("readNewsUpdated", updateCounts);
+
+    return () => {
+      window.removeEventListener("storage", updateCounts);
+      window.removeEventListener("savedNewsUpdated", updateCounts);
+      window.removeEventListener("readNewsUpdated", updateCounts);
+    };
+  }, []);
 
   // Handle scroll effect
   useEffect(() => {
@@ -187,7 +216,7 @@ const Navbar = () => {
         {/* Animated top border */}
         <div className="h-0.5 bg-linear-to-r from-transparent via-orange-500 to-transparent animate-pulse"></div>
 
-        <div className="w-full xl:w-[80%] mx-auto px-4 py-4">
+        <div className="w-9/10  mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Enhanced Logo */}
             <Link
@@ -200,8 +229,8 @@ const Navbar = () => {
               {/* Logo container */}
               <div className="relative bg-linear-to-r from-gray-900 to-black px-4 py-2 rounded-xl border border-gray-800 group-hover:border-orange-500 transition-all duration-300 shadow-lg group-hover:shadow-orange-500/20">
                 <p className="text-3xl md:text-4xl flex items-center tracking-widest gap-1 relative">
-                  {/* "fakt" part */}
-                  <span className="font-black tracking-wide bg-linear-to-br  from-white via-gray-100 to-gray-300 bg-clip-text text-transparent drop-shadow-lg">
+                  {/* "fact" part */}
+                  <span className="font-black tracking-wide bg-linear-to-br from-white via-gray-100 to-gray-300 bg-clip-text text-transparent drop-shadow-lg">
                     fact
                   </span>
 
@@ -277,6 +306,96 @@ const Navbar = () => {
                   </Link>
                 );
               })}
+
+              {/* Saved News Link */}
+              <Link
+                to="/saved"
+                className={`
+                  relative px-5 py-3 text-base font-semibold
+                  rounded-xl overflow-hidden
+                  transition-all duration-300
+                  hover:text-white cursor-pointer
+                  group
+                  ${window.location.pathname === "/saved" ? "text-white bg-linear-to-r from-orange-600 to-orange-500" : ""}
+                `}
+              >
+                {window.location.pathname !== "/saved" && (
+                  <span className="absolute inset-0 bg-linear-to-r from-orange-600 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-xl"></span>
+                )}
+
+                <span
+                  className={`
+                  absolute bottom-0 left-0 w-full h-0.5 bg-linear-to-r from-orange-500 to-red-500
+                  ${window.location.pathname === "/saved" ? "scale-x-100" : "transform scale-x-0 group-hover:scale-x-100"}
+                  transition-transform duration-300
+                `}
+                ></span>
+
+                <span className="relative z-10 flex items-center gap-2">
+                  <BookmarkCheck
+                    className={`w-4 h-4 transition-all duration-300 ${
+                      window.location.pathname === "/saved"
+                        ? "text-white"
+                        : "text-orange-500 group-hover:text-white group-hover:scale-110"
+                    }`}
+                  />
+                  Saxlanılanlar
+                  {savedCount > 0 && (
+                    <span className="ml-1 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">
+                      {savedCount}
+                    </span>
+                  )}
+                </span>
+
+                {window.location.pathname === "/saved" && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                )}
+              </Link>
+
+              {/* Read News Link */}
+              <Link
+                to="/read"
+                className={`
+                  relative px-5 py-3 text-base font-semibold
+                  rounded-xl overflow-hidden
+                  transition-all duration-300
+                  hover:text-white cursor-pointer
+                  group
+                  ${window.location.pathname === "/read" ? "text-white bg-linear-to-r from-blue-600 to-blue-500" : ""}
+                `}
+              >
+                {window.location.pathname !== "/read" && (
+                  <span className="absolute inset-0 bg-linear-to-r from-blue-600 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-xl"></span>
+                )}
+
+                <span
+                  className={`
+                  absolute bottom-0 left-0 w-full h-0.5 bg-linear-to-r from-blue-500 to-indigo-500
+                  ${window.location.pathname === "/read" ? "scale-x-100" : "transform scale-x-0 group-hover:scale-x-100"}
+                  transition-transform duration-300
+                `}
+                ></span>
+
+                <span className="relative z-10 flex items-center gap-2">
+                  <Eye
+                    className={`w-4 h-4 transition-all duration-300 ${
+                      window.location.pathname === "/read"
+                        ? "text-white"
+                        : "text-blue-500 group-hover:text-white group-hover:scale-110"
+                    }`}
+                  />
+                  Oxunmuşlar
+                  {readCount > 0 && (
+                    <span className="ml-1 px-2 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full">
+                      {readCount}
+                    </span>
+                  )}
+                </span>
+
+                {window.location.pathname === "/read" && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                )}
+              </Link>
             </div>
 
             {/* Search Icon + Mobile Menu Button */}
@@ -396,6 +515,94 @@ const Navbar = () => {
                     </Link>
                   );
                 })}
+
+                {/* Saved News Mobile Link */}
+                <Link
+                  to="/saved"
+                  onClick={() => setShowMobileMenu(false)}
+                  className={`
+                    flex items-center justify-between px-4 py-3.5
+                    rounded-xl
+                    ${
+                      window.location.pathname === "/saved"
+                        ? "bg-linear-to-r from-orange-600 to-orange-500 border-orange-500"
+                        : "bg-linear-to-r from-gray-900 to-gray-800 border-gray-800 hover:from-orange-600 hover:to-orange-500 hover:border-orange-500"
+                    }
+                    transition-all duration-300
+                    group border cursor-pointer
+                    ${window.location.pathname === "/saved" ? "shadow-lg shadow-orange-500/20" : "hover:shadow-lg hover:shadow-orange-500/20"}
+                  `}
+                >
+                  <div className="flex items-center space-x-3">
+                    <BookmarkCheck
+                      className={`
+                      w-5 h-5 transition-all duration-300
+                      ${
+                        window.location.pathname === "/saved"
+                          ? "text-white"
+                          : "text-orange-500 group-hover:text-white"
+                      }
+                    `}
+                    />
+                    <span
+                      className={`text-sm font-medium transition-colors ${window.location.pathname === "/saved" ? "text-white" : "text-gray-200 group-hover:text-white"}`}
+                    >
+                      Saxlanılanlar
+                    </span>
+                    {savedCount > 0 && (
+                      <span className="ml-1 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">
+                        {savedCount}
+                      </span>
+                    )}
+                  </div>
+                  <ChevronRight
+                    className={`w-4 h-4 transition-all duration-300 ${window.location.pathname === "/saved" ? "text-white translate-x-1" : "text-gray-600 group-hover:text-white group-hover:translate-x-1"}`}
+                  />
+                </Link>
+
+                {/* Read News Mobile Link */}
+                <Link
+                  to="/read"
+                  onClick={() => setShowMobileMenu(false)}
+                  className={`
+                    flex items-center justify-between px-4 py-3.5
+                    rounded-xl
+                    ${
+                      window.location.pathname === "/read"
+                        ? "bg-linear-to-r from-blue-600 to-blue-500 border-blue-500"
+                        : "bg-linear-to-r from-gray-900 to-gray-800 border-gray-800 hover:from-blue-600 hover:to-blue-500 hover:border-blue-500"
+                    }
+                    transition-all duration-300
+                    group border cursor-pointer
+                    ${window.location.pathname === "/read" ? "shadow-lg shadow-blue-500/20" : "hover:shadow-lg hover:shadow-blue-500/20"}
+                  `}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Eye
+                      className={`
+                      w-5 h-5 transition-all duration-300
+                      ${
+                        window.location.pathname === "/read"
+                          ? "text-white"
+                          : "text-blue-500 group-hover:text-white"
+                      }
+                    `}
+                    />
+                    <span
+                      className={`text-sm font-medium transition-colors ${window.location.pathname === "/read" ? "text-white" : "text-gray-200 group-hover:text-white"}`}
+                    >
+                      Oxunmuşlar
+                    </span>
+                    {readCount > 0 && (
+                      <span className="ml-1 px-2 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full">
+                        {readCount}
+                      </span>
+                    )}
+                  </div>
+                  <ChevronRight
+                    className={`w-4 h-4 transition-all duration-300 ${window.location.pathname === "/read" ? "text-white translate-x-1" : "text-gray-600 group-hover:text-white group-hover:translate-x-1"}`}
+                  />
+                </Link>
               </div>
             </div>
           )}

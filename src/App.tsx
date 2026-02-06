@@ -6,6 +6,8 @@ import { AboutPage } from "./Pages/AboutPage";
 import { AdsPage } from "./Pages/AdsPage";
 import { ContactPage } from "./Pages/ContactPage";
 import ScrollToTop from "./components/ScrollToTop";
+import SavedNews from "./Pages/SavedNews";
+import ReadNews from "./Pages/ReadNews";
 
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/ads" element={<AdsPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/saved" element={<SavedNews />} />
+        <Route path="/read" element={<ReadNews />} />
       </Routes>
     </BrowserRouter>
   );
