@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useRef } from "react";
 import type { News } from "../types";
 import MainStory from "./MainStory";
@@ -84,6 +85,7 @@ const HomePage = () => {
         observer.unobserve(observerRef.current);
       }
     };
+   
   }, [hasMore, loading, page, news]);
 
   return (
