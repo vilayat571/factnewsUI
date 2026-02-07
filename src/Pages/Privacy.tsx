@@ -1,4 +1,3 @@
-import React from 'react';
 import Layout from '../layout/Layout';
 import { Shield, Lock, Eye, FileText, Mail, AlertCircle } from 'lucide-react';
 
